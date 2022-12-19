@@ -117,19 +117,16 @@ There are also some basic commands like
     
 4.  `docker start`: To start a stopped container, use the `docker start` command followed by the container name or ID.
     
-
-```bash
-docker start my-container
-```
+    ```bash
+    docker start my-container
+    ```
 
 5.  `docker rm`: To remove one or more containers, use the docker rm command followed by the container name or ID.
     
-
-```bash
-docker rm my-container
-```
-
-We need to use `-f` to remove a running container forcefully.
+    ```bash
+    docker rm my-container
+    ```
+    We need to use `-f` to remove a running container forcefully.
 
 6.  `docker rmi` : To remove one or more images, use the `docker rmi` command followed by the image name or ID.
     
