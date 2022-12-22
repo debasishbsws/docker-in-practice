@@ -336,13 +336,17 @@ To use a volume with a Docker container, you can use the `-v` or `--volume` flag
 
 For example, to mount the `/app/data` directory on the host machine as the `/data` directory in the container, you can use the following command:
 
-`bash docker run -v my-data:/data image [command] [arguments]`
+```bash
+docker run -v my-data:/data image [command] [arguments]
+```
 
 You can also use the `--mount` flag to specify additional options for the Volume, such as the volume name and the read-write mode.
 
 For example, to mount the `my-data` volume as the `/data` directory in the container in read-only mode, you can use the following command:
 
-`bash docker run --mount source=my-data,target=/data image [command] [arguments]`
+```bash
+docker run --mount source=my-data,target=/data image [command] [arguments]
+```
 
 You can use the `docker volume ls` command to list all of the volumes on your system and the `docker volume rm volume-name` command to delete a volume.
 
@@ -354,7 +358,9 @@ The `-v` flag takes a `host-dir:container-dir` argument, where `host-dir` is the
 
 For example, to mount the `/app/data` directory on the host machine as the `/data` directory in the container, you can use the following command:
 
-`bash docker run -v /app/data:/data image [command] [arguments]`
+```bash
+bash docker run -v /app/data:/data image [command] [arguments]
+```
 
 This will mount the `/app/data` directory on the host machine as the `/data` directory in the container. The data in the `/app/data` directory will be accessible from within the container at the `/data` directory.
 
