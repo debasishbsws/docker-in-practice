@@ -8,6 +8,8 @@ A Dockerfile is a text file that contains instructions for building a Docker ima
 
 We will containerize a simple Node.js application. Suppose you know Node and Express, then great. If you don't, then follow the steps.
 
+You will find all the code we use here in my GitHub: [https://github.com/debasishbsws/docker-in-practice/tree/main/code](https://github.com/debasishbsws/docker-in-practice/tree/main/code)
+
 1.  Open up any empty folder.
 2.  If you have Node installed, you can open up the terminal, go to that directory, and run `npm init -y`, which will create a `package.json` file with all the default values. Also, you should install Express by running `npm i express`.
 
