@@ -25,13 +25,9 @@ Overall, containers offer a lightweight and efficient way to isolate and run app
 To work with Docker, it is not necessary to know the Docker architecture or how Docker works \[[You can see that here](https://docs.docker.com/get-started/overview/#:~:text=Docker%20architecture,to%20a%20remote%20Docker%20daemon.).\], but we need to understand some of the terms.
 
 1.  **Image**: A Docker image is a lightweight, standalone, and executable package that includes everything an application needs to run, including the application code, libraries, dependencies, and runtime.
-    
 2.  **Container**: A Docker container is a running instance of a Docker image. A container allows an application to be run in a lightweight, isolated environment.
-    
 3.  **Registry**: A Docker registry is a centralized storage location for Docker images. Docker provides a free public registry called Docker Hub, which allows users to store and distribute their images.
-    
 4.  **Dockerfile**: A Dockerfile is a text file that contains the instructions for building a Docker image. It specifies the base image, the dependencies, and the commands needed to run the application.
-    
 
 Let's run the first command.
 
@@ -96,41 +92,51 @@ docker run -d -p 8080:80 --name portNginx nginx
 There are also some basic commands like
 
 1.  `docker search`: Search the Docker Hub for images. Use the docker search command followed by the search term.
-    
+
     ```bash
     docker search ubuntu
     ```
-    
+
 2.  `docker pull`: To pull an image or a repository from a registry, use the `docker pull` command followed by the image or repository name.
-    
+
     ```bash
     docker pull ubuntu:18.04
     ```
-    
+
 3.  `docker stop`: To stop a running container, use the `docker stop` command followed by the container name or ID.
-    
+
     First, we start the container by `docker run --name my-container ubuntu:18.04`
-    
+
     ```bash
-    docker stop my-container 
+    docker stop my-container
     ```
-    
+
 4.  `docker start`: To start a stopped container, use the `docker start` command followed by the container name or ID.
-    
+
     ```bash
     docker start my-container
     ```
 
 5.  `docker rm`: To remove one or more containers, use the docker rm command followed by the container name or ID.
-    
+
     ```bash
     docker rm my-container
     ```
+
     We need to use `-f` to remove a running container forcefully.
 
 6.  `docker rmi` : To remove one or more images, use the `docker rmi` command followed by the image name or ID.
-    
+
     ```bash
     docker rmi ubuntu:18.04
     ```
-    
+
+7.  `docker inspect`: To display detailed information about a Docker container or image. You can specify the name or ID of the container or image as an argument.
+
+    For example, to inspect a container called `my-container`, we can use the following command:
+
+    ```bash
+    docker inspect my-container
+    ```
+
+    This will display detailed information about the my-container container, including the container's ID, name, state, image, and configuration.
