@@ -1,6 +1,6 @@
-Before starting with this part 2, I recommend you check part 1 of the "Docker in Practice" series.
+If you are already a Developer or just started with development (Frontend, Backend, Node dev, Python-dev, etc) knowledge of Containers will be incredibly beneficial to your development journey. And if you are planning to learn or learning DevOps it is something necessary to know. This Blog on Docker will help you learn some of the intermediate concepts like Dockerfile and Docker Volume. Before starting with this part 2, I recommend you check [part 1 of the "Docker in Practice"](https://blog.debasishbsws.me/docker-in-practice-part-1) series where we covered the Basics of Docker.
 
-# Build an Image
+# Dockerfile
 
 A Dockerfile is a text file that contains instructions for building a Docker image. A Docker image is a lightweight, stand-alone, executable package that includes everything needed to run a piece of software, including the application code, system tools, libraries, and runtime.
 
@@ -8,54 +8,54 @@ A Dockerfile is a text file that contains instructions for building a Docker ima
 
 We will containerize a simple Node.js application. Suppose you know Node and Express, then great. If you don't, then follow the steps.
 
-You will find all the code we use here in my GitHub: [https://github.com/debasishbsws/docker-in-practice/tree/main/code](https://github.com/debasishbsws/docker-in-practice/tree/main/code)
+You will find all the code we use here on my GitHub: [https://github.com/debasishbsws/docker-in-practice/tree/main/code](https://github.com/debasishbsws/docker-in-practice/tree/main/code)
 
-1.  Open up any empty folder.
-2.  If you have Node installed, you can open up the terminal, go to that directory, and run `npm init -y`, which will create a `package.json` file with all the default values. Also, you should install Express by running `npm i express`.
+1. Open up any empty folder.
+2. If you have Node installed, you can open up the terminal, go to that directory, and run `npm init -y`, which will create a `package.json` file with all the default values. Also, you should install Express by running `npm i express`.
 
-    Now your `package.json` file will look something like this:
+   Now your `package.json` file will look something like this:
 
-    ```json
-    {
-      "name": "code",
-      "version": "1.0.0",
-      "description": "",
-      "main": "index.js",
-      "scripts": {
-        "start": "node index.js"
-      },
-      "keywords": [],
-      "author": "",
-      "license": "ISC",
-      "dependencies": {
-        "express": "^4.18.2"
-      }
-    }
-    ```
+   ```json
+   {
+     "name": "code",
+     "version": "1.0.0",
+     "description": "",
+     "main": "index.js",
+     "scripts": {
+       "start": "node index.js"
+     },
+     "keywords": [],
+     "author": "",
+     "license": "ISC",
+     "dependencies": {
+       "express": "^4.18.2"
+     }
+   }
+   ```
 
-    Here we just added the "**start**" script to this file so that the application will start by running `npm start`.
+   Here we just added the "**start**" script to this file so that the application will start by running `npm start`.
 
-    _<mark>If you don't have Node </mark>_ you can create the 'package.json' file and paste the above JSON code.
+   _<mark>If you don't have Node </mark>_ you can create the 'package.json' file and paste the above JSON code.
 
-3.  Create the `index.js` file in the same folder and write a simple express app.
+3. Create the `index.js` file in the same folder and write a simple express app.
 
-    ```javascript
-    const express = require("express");
-    const app = express();
+   ```javascript
+   const express = require("express");
+   const app = express();
 
-    //values from env
-    const PORT = process.env.PORT || 3000;
+   //values from env
+   const PORT = process.env.PORT || 3000;
 
-    //request
-    app.get("/", (req, res) => {
-      res.send("<h1>Hello World!!</h1>");
-    });
+   //request
+   app.get("/", (req, res) => {
+     res.send("<h1>Hello World!!</h1>");
+   });
 
-    //app listening
-    app.listen(PORT, () => {
-      console.log(`App listening at http://localhost:${PORT}`);
-    });
-    ```
+   //app listening
+   app.listen(PORT, () => {
+     console.log(`App listening at http://localhost:${PORT}`);
+   });
+   ```
 
 Our application is ready to be Dockerized. If you have Node in your system, you can run `npm start`, open a web browser, and navigate to `http://localhost:3000`. You should see the message "Hello, World!!" displayed in your browser. We don't need Node installed for this tutorial, as we will run this app inside a container.
 
@@ -100,7 +100,7 @@ COPY . .
 
 **Note** that we are only copying the `package.json` file rather than copying the entire working directory. This allows us to take advantage of cached Docker layers. For a good explanation, check [this](https://docs.docker.com/build/cache/).
 
-Our application will listen to port `3000`, and we need to `EXPOSE` that port to have it mapped by the Docker daemon:
+Our application will listen to the port `3000`, and we need to `EXPOSE` that port to have it mapped by the Docker daemon:
 
 ```plaintext
 EXPOSE 3000
@@ -146,7 +146,7 @@ Create a `.dockerignore` file and open that up:
 touch .dockerignore
 ```
 
-include
+And include these lines in there:
 
 ```bash
 node_modules
@@ -186,7 +186,7 @@ docker build -t my-node-app .
 
 This command will build an image with the tag `my-node-app` using the instructions in the `Dockerfile` located in the current directory (`.`). Now if you run `docker image ls` you can see an image named `my-node-app` which is the image we build. And if we run that image as a container the app will print "Hello World!" into the browser.
 
-There are also some other types:
+There are also some other types of ways to build an image:
 
 To build an image from a Git repository, you can use the URL of the repository as the `PATH` argument:
 
@@ -212,7 +212,7 @@ Now to run the image as a container, we will use the following:
 docker run -p 3000:3000 -d --name node-app my-node-app
 ```
 
-### Environment variables:
+## Environment variables:
 
 Now, if you watch the code of the `index.js` file, there is a line `const PORT = process.env.PORT || 3000;` that determines the `PORT` the application will listen. Here we expect to take the `PORT` as an Environment variable, but we are hardcoding it everywhere. How can I set an ENV VAR in a container?
 
@@ -263,7 +263,7 @@ It will create the Mongo container and forward the mongo PORT `27017` to our loc
 
 ### Adding data to the database
 
-1.  Connect to the MongoDB container using the `mongo` command-line client:
+1. Connect to the MongoDB container using the `mongo` command-line client:
 
 ```bash
 docker exec -it mongodb mongosh
@@ -271,7 +271,7 @@ docker exec -it mongodb mongosh
 
 This command will connect to the MongoDB instance running in the container and open the `mongo` shell.
 
-2.  Create a new database and collection in the MongoDB instance:
+2. Create a new database and collection in the MongoDB instance:
 
 ```bash
 use mydatabase
@@ -280,7 +280,7 @@ db.createCollection("mycollection")
 
 This command will create a new database called `mydatabase` and a new collection called `mycollection` in the MongoDB instance.
 
-3.  Insert some data into the collection:
+3. Insert some data into the collection:
 
 ```bash
 db.mycollection.insert({ name: "John", age: 30 })
@@ -289,7 +289,7 @@ db.mycollection.insert({ name: "Jane", age: 25 })
 
 This line will insert two documents into the `mycollection` collection.
 
-4.  Verify that the data has been inserted:
+4. Verify that the data has been inserted:
 
 ```bash
 db.mycollection.find()
@@ -328,13 +328,17 @@ Volumes can be used in several different ways, such as:
 - **Sharing data between containers**: You can use a volume to share data between multiple containers. This can be useful if you have multiple containers that need access to the same data, such as a web server and a database.
 - **Mounting a host directory as a volume**: You can use a Volume to mount a host directory as a volume inside the container. This allows you to access data on the host machine from within the container or to share data between the container and the host.
 
-To create a volume, you can use the `docker volume create` command. For example, to create a volume called `my-data`, you can use the following command:
+**There are 3 types of Docker volume we have:**
+
+### Named Volume:
+
+To create a named volume, you can use the `docker volume create` command. For example, to create a volume called `my-data`, you can use the following command:
 
 ```bash
 docker volume create my-data
 ```
 
-To use a volume with a Docker container, you can use the `-v` or `--volume` flag when running the `docker run` command. The `-v` flag takes a `volume-name:container-dir` argument.
+To use a named volume with a Docker container, you can use the `-v` or `--volume` flag when running the `docker run` command. The `-v` flag takes a `volume-name:container-dir` argument.
 
 For example, to mount the `/app/data` directory on the host machine as the `/data` directory in the container, you can use the following command:
 
@@ -347,16 +351,16 @@ You can also use the `--mount` flag to specify additional options for the Volume
 For example, to mount the `my-data` volume as the `/data` directory in the container in read-only mode, you can use the following command:
 
 ```bash
-docker run --mount source=my-data,target=/data image [command] [arguments]
+docker run --mount source=my-data,target=/data,readonly image [command] [arguments]
 ```
 
-You can use the `docker volume ls` command to list all of the volumes on your system and the `docker volume rm volume-name` command to delete a volume.
+### **Bind mounts:**
 
-There is another type of Volume called blind mount to mount a host directory, as a volume in Docker allows you to access data on the host machine from within the container or to share data between the container and the host.
+There is another type of Volume called Bind mounts to mount a host directory, as a volume in Docker allows you to access data on the host machine from within the container or to share data between the container and the host.
 
-To mount a host directory as a volume in a Docker container, you can use the `-v` or `--volume` flag when running the `docker run` command.
+To mount a host directory as a volume in a Docker container is the same as mounting named volumes.
 
-The `-v` flag takes a `host-dir:container-dir` argument, where `host-dir` is the path to the host directory and `container-dir` is the path to the directory inside the container where the Volume will be mounted.
+Here the `-v` flag takes a `host-dir:container-dir` argument, where `host-dir` is the path to the host directory and `container-dir` is the path to the directory inside the container where the Volume will be mounted.
 
 For example, to mount the `/app/data` directory on the host machine as the `/data` directory in the container, you can use the following command:
 
@@ -366,17 +370,27 @@ bash docker run -v /app/data:/data image [command] [arguments]
 
 This will mount the `/app/data` directory on the host machine as the `/data` directory in the container. The data in the `/app/data` directory will be accessible from within the container at the `/data` directory.
 
-- Any changes made to the data in the `/app/data` directory on the host will be reflected in the `/data` directory in the container, and vice versa.
+Any changes made to the data in the `/app/data` directory on the host will be reflected in the `/data` directory in the container, and vice versa.
 
-  You can also use the `--mount` flag to specify additional options for the Volume, such as the read-write mode.
+You can also use the `--mount` flag to specify additional options for the Volume, such as the read-write mode.
 
-  ```bash
-  docker run --mount type=bind,source=/app/data,target=/data,readonly image [command] [arguments]
-  ```
+```bash
+docker run --mount type=bind,source=/app/data,target=/data,readonly image [command] [arguments]
+```
 
-  This will mount the `/app/data` directory on the host machine as the `/data` directory in the container in read-only mode, which means that the data in the `/data` directory in the container cannot be modified.
+### Anonymous volume:
 
-If we check the [documentation for docker mongo](https://hub.docker.com/_/mongo), we can see that the **data was stored in the default location** `/data/db` **inside the container**, so we need to mount it to a volume we created.
+An anonymous volume in Docker is a type of volume that does not have a specific name and is not listed when you run the `docker volume ls` command. Anonymous volumes are created when you use the `-v` or `--volume` flag without specifying the volume name or any host directory.
+
+```bash
+bash docker run -v /data image [command] [arguments]
+```
+
+These are useful when you don't need to access the volume outside of the container or you don't need to persist the data beyond the life of the container. They can also be useful when you want to create a volume for a specific purpose, such as storing log files or temporary data.
+
+## Get back to our MongoDB container
+
+If we check the [documentation for docker mongo in Dockerhub](https://hub.docker.com/_/mongo), we can see that the **data was stored in the default location** `/data/db` **inside the container**, so we need to mount it to a volume we created.
 
 ```bash
 docker run -v my-data:/data/db -p 27017:27017 --name mongodb mongo
@@ -384,9 +398,9 @@ docker run -v my-data:/data/db -p 27017:27017 --name mongodb mongo
 
 Now, if we delete `mongodb` container and start again mounting the same Volume (`my-data`) our data will be there.
 
-#### Here are some common Docker volume commands:
+## Here are some common Docker volume commands:
 
-1.  `docker volume create`: This command is used to create a new Docker volume. You can specify the name of the volume as an argument. For example:
+1. `docker volume create`: This command is used to create a new Docker volume. You can specify the name of the volume as an argument. For example:
 
 ```bash
 docker volume create my-volume
@@ -394,7 +408,7 @@ docker volume create my-volume
 
 This will create a new volume called `my-volume`.
 
-2.  `docker volume ls`: This command is used to list all of the Docker volumes on your system. You can use the `--filter` flag to filter the list by volume name or other criteria. For example:
+1. `docker volume ls`: This command is used to list all of the Docker volumes on your system. You can use the `--filter` flag to filter the list by volume name or other criteria. For example:
 
 ```bash
 docker volume ls
@@ -408,7 +422,7 @@ docker volume ls --filter "dangling=true"
 
 This will list all of the "dangling" volumes on your system, which are volumes that are not attached to any containers.
 
-3.  `docker volume inspect`: This command is used to display detailed information about a Docker volume. You can specify the name of the volume as an argument. For example:
+1. `docker volume inspect`: This command is used to display detailed information about a Docker volume. You can specify the name of the volume as an argument. For example:
 
 ```bash
 docker volume inspect my-volume
@@ -416,10 +430,14 @@ docker volume inspect my-volume
 
 This will display detailed information about the `my-volume` volume, including the volume driver, mount point, and labels.
 
-4.  `docker volume rm`: This command is used to delete a Docker volume. You can specify the name of the volume as an argument. For example:
+1. `docker volume rm`: This command is used to delete a Docker volume. You can specify the name of the volume as an argument. For example:
 
 ```bash
 docker volume rm my-volume
 ```
 
 This will delete the `my-volume` volume.
+
+### Link to Part 3
+
+In part 3, we will dive deeply into docker-compose, and learn about Docker networks.
